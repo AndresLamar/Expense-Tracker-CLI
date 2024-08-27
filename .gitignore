@@ -1,0 +1,30 @@
+# Ignorar las dependencias instaladas por Composer
+/vendor/
+
+# Ignorar archivos generados por Composer
+/composer.lock
+/composer.phar
+
+# Ignorar configuraciones de IDE y editores
+/.idea/
+/.vscode/
+/nbproject/
+
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de logs y cachés
+/logs/
+/cache/
+/*.log
+
+# Ignorar configuraciones locales
+.env
+.env.local
+.env.*.local
+
+# Ignorar archivos de PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+/tests/_output/
