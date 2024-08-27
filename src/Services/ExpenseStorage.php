@@ -38,6 +38,15 @@ class ExpenseStorage
 
     public function addExpense($description, $amount)
     {
+        if ($amount < 0) {
+            return "Amount cannot be negative";
+        }
+
+        if (empty($description)) {
+            return "Description cannot be empty";
+        }
+
+        $amount = (int) $amount;
         $id = count($this->data) + 1;
         $date = date('Y-m-d H:i:s');
         $expense = new Expense($id, $description, $amount, $date, $date);
