@@ -112,27 +112,47 @@ class ExpenseStorage
     }
 
 
-    public function summaryExpenses()
+    public function summaryExpenses($month = null)
     {
+        // if (empty($this->data)) {
+        //     return "No expenses found\n";
+        // }
+
+        // $total = 0;
+        // foreach ($this->data as $expense) {
+        //     $total += $expense->amount;
+        // }
+
+        // return "Total expenses: $$total\n";
+
         if (empty($this->data)) {
             return "No expenses found\n";
         }
 
         $total = 0;
-        foreach ($this->data as $expense) {
-            $total += $expense->amount;
+        $monthName = '';
+
+        if ($month !== null) {
+            $monthName = date('F', mktime(0, 0, 0, $month, 10)); // Convertimos el número de mes en nombre del mes
         }
 
-        return "Total expenses: $$total\n";
+        foreach ($this->data as $expense) {
+            $expenseMonth = date('n', strtotime($expense->createdAt)); // Obtenemos el mes de la fecha de creación del gasto
+
+            if ($month === null || $expenseMonth == $month) {
+                $total += $expense->amount;
+            }
+        }
+
+        if ($month !== null) {
+            return "Total expenses for $monthName: $$total\n";
+        } else {
+            return "Total expenses: $$total\n";
+        }
     }
 
     public function deleteExpenses($id)
     {
-        // $this->data = array_filter($this->data, function ($expense) use ($id) {
-        //     return $expense->id !== $id;
-        // });
-        // $this->saveToJson();
-
         foreach ($this->data as $key => $expense) {
             if ($expense->id == $id) {
                 unset($this->data[$key]);
@@ -140,6 +160,8 @@ class ExpenseStorage
                 return "Expense deleted successfully\n";
             }
         }
+
+        return "Expense (ID: $id) not found\n";
     }
 
     public function saveToJson(): void

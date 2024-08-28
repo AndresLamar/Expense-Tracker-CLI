@@ -26,7 +26,13 @@ class SummaryCommand extends Command
             // 07 defining the description of the command
             ->setDescription('Make a summary of all expenses ')
             // 08 defining the help (shown with -h option)
-            ->setHelp('This command makes a summary of all expenses');
+            ->setHelp('This command makes a summary of all expenses')
+            ->addOption(
+                'month',
+                'm',
+                InputOption::VALUE_OPTIONAL,
+                'The month of the year'
+            );
     }
 
     // 09 implementing the execute method
@@ -36,7 +42,7 @@ class SummaryCommand extends Command
 
         $storage = new ExpenseStorage();
 
-        $result = $storage->summaryExpenses();
+        $result = $storage->summaryExpenses($input->getOption('month'));
 
         $output->writeln($result);
 
