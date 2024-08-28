@@ -5,6 +5,7 @@ use App\Commands\AddCommand;
 use App\Commands\DeleteCommand;
 use App\Commands\ListCommand;
 use App\Commands\SummaryCommand;
+use App\Commands\UpdateCommand;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__ . '/../../autoload.php')) {
@@ -23,5 +24,6 @@ $app->add(new AddCommand());
 $app->add(new ListCommand());
 $app->add(new SummaryCommand());
 $app->add(new DeleteCommand());
+$app->add(new UpdateCommand());
 
 $app->run();

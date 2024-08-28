@@ -1,3 +1,5 @@
+data.json 
+
 # Ignorar las dependencias instaladas por Composer
 /vendor/
 
@@ -29,4 +31,3 @@ Thumbs.db
 /phpunit.xml.dist
 /tests/_output/
 
-data.json

@@ -76,6 +76,42 @@ class ExpenseStorage
         return $output;
     }
 
+    public function updateExpense($id, $description, $amount)
+    {
+        if (empty($this->data)) {
+            return "No expenses found\n";
+        }
+
+        foreach ($this->data as $key => $expense) {
+            if ($expense->id == $id) {
+                // Validar si el monto es negativo
+                if ($amount < 0) {
+                    return "Amount cannot be negative\n";
+                }
+
+                // Validar y actualizar la descripción si se proporciona (y no está vacía)
+                if ($description !== null && $description !== '') {
+                    $this->data[$key]->description = $description;
+                }
+
+                // Validar y actualizar el monto si se proporciona (y es un valor numérico válido)
+                if ($amount !== null && $amount !== '') {
+                    $amount = (int) $amount;
+                    $this->data[$key]->amount = $amount;
+                }
+
+                // Actualizar la fecha de modificación
+                $this->data[$key]->updatedAt = date('Y-m-d H:i:s');
+                $this->saveToJson();
+
+                return "Expense (ID: $id) updated successfully\n";
+            }
+        }
+
+        return "Expense (ID: $id) not found\n";
+    }
+
+
     public function summaryExpenses()
     {
         if (empty($this->data)) {
