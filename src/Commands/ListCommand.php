@@ -26,7 +26,20 @@ class ListCommand extends Command
             // 07 defining the description of the command
             ->setDescription('List all expenses ')
             // 08 defining the help (shown with -h option)
-            ->setHelp('This command lists all expenses');
+            ->setHelp('This command lists all expenses')
+            ->addOption(
+                'category',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'The category of the expense',
+                ''
+            )
+            ->addOption(
+                'list-categories',
+                'lc',
+                InputOption::VALUE_NONE,
+                'List all categories with the number of expenses'
+            );
     }
 
     // 09 implementing the execute method
@@ -36,7 +49,13 @@ class ListCommand extends Command
 
         $storage = new ExpenseStorage();
 
-        $result = $storage->listExpenses();
+        if ($input->getOption('list-categories')) {
+            $result = $storage->listCategories();
+        } else {
+            $result = $storage->listExpenses($input->getOption('category'));
+        }
+
+        // $result = $storage->listExpenses($input->getOption('category'));
 
         $output->writeln($result);
 

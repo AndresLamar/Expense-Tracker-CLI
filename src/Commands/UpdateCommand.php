@@ -46,7 +46,14 @@ class UpdateCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'The amount of the expense',
 
-            );
+            )
+            ->addOption(
+                'category',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'The category of the expense',
+                ''
+            );;
     }
 
     // 09 implementing the execute method
@@ -56,11 +63,12 @@ class UpdateCommand extends Command
         $data = [
             'id' => $input->getOption('id'),
             'description' => $input->getOption('description'),
+            'category' => $input->getOption('category'),
             'amount' => $input->getOption('amount'),
         ];
 
         $storage = new ExpenseStorage();
-        $result = $storage->updateExpense($data['id'], $data['description'], $data['amount']);
+        $result = $storage->updateExpense($data['id'], $data['description'], $data['category'], $data['amount']);
 
         $output->writeln($result);
         // 11 returning the success status

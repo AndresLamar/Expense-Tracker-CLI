@@ -41,6 +41,13 @@ class AddCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'The amount of the expense',
                 0
+            )
+            ->addOption(
+                'category',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'The category of the expense',
+                ''
             );
     }
 
@@ -51,10 +58,11 @@ class AddCommand extends Command
         $data = [
             'description' => $input->getOption('description'),
             'amount' => $input->getOption('amount'),
+            'category' => $input->getOption('category'),
         ];
 
         $storage = new ExpenseStorage();
-        $result = $storage->addExpense($data['description'], $data['amount']);
+        $result = $storage->addExpense($data['description'], $data['amount'], $data['category']);
 
         $output->writeln($result);
         // 11 returning the success status

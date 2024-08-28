@@ -6,14 +6,16 @@ class Expense
 {
     public $id;
     public $description;
+    public $category;
     public $amount;
     public $createdAt;
     public $updatedAt;
 
-    public function __construct($id, $description, $amount, $createdAt, $updatedAt)
+    public function __construct($id, $description, $category, $amount, $createdAt, $updatedAt)
     {
         $this->id = $id;
         $this->description = $description;
+        $this->category = $category;
         $this->amount = $amount;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
@@ -36,7 +38,7 @@ class ExpenseStorage
         }
     }
 
-    public function addExpense($description, $amount)
+    public function addExpense($description, $amount, $category)
     {
         if ($amount < 0) {
             return "Amount cannot be negative";
@@ -49,34 +51,66 @@ class ExpenseStorage
         $amount = (int) $amount;
         $id = count($this->data) + 1;
         $date = date('Y-m-d H:i:s');
-        $expense = new Expense($id, $description, $amount, $date, $date);
+        $expense = new Expense($id, $description, $category, $amount, $date, $date);
         $this->data[] = $expense;
         $this->saveToJson();
 
         return "Expense added successfully (ID: $id)";
     }
 
-    public function listExpenses()
+    public function listExpenses($category = null)
     {
         if (empty($this->data)) {
             return "No expenses found\n";
         }
 
-        $output = "ID  Date       Description  Amount\n";
+        $output = "ID  Date       Description  Amount  Category\n";
         foreach ($this->data as $expense) {
+            // Si se especifica una categoría, solo mostrar los gastos que coincidan con esa categoría
+            if ($category && $expense->category !== $category) {
+                continue;
+            }
+
             $output .= sprintf(
-                "%-3d %-10s %-12s $%-6s\n",
+                "%-3d %-10s %-12s $%-6s %-10s\n",
                 $expense->id,
                 date('Y-m-d', strtotime($expense->createdAt)),
                 $expense->description,
-                $expense->amount
+                $expense->amount,
+                $expense->category
             );
         }
 
         return $output;
     }
 
-    public function updateExpense($id, $description, $amount)
+    public function listCategories()
+    {
+        if (empty($this->data)) {
+            return "No expenses found\n";
+        }
+
+        $categories = [];
+
+        foreach ($this->data as $expense) {
+            $category = $expense->category ?: 'Uncategorized';
+            if (!isset($categories[$category])) {
+                $categories[$category] = 0;
+            }
+            $categories[$category]++;
+        }
+
+        $output = "Category        Count\n";
+        $output .= "----------------------\n";
+        foreach ($categories as $category => $count) {
+            $output .= sprintf("%-15s %d\n", $category, $count);
+        }
+
+        return $output;
+    }
+
+
+    public function updateExpense($id, $description, $category, $amount)
     {
         if (empty($this->data)) {
             return "No expenses found\n";
@@ -92,6 +126,10 @@ class ExpenseStorage
                 // Validar y actualizar la descripción si se proporciona (y no está vacía)
                 if ($description !== null && $description !== '') {
                     $this->data[$key]->description = $description;
+                }
+
+                if ($category !== null && $category !== '') {
+                    $this->data[$key]->category = $category;
                 }
 
                 // Validar y actualizar el monto si se proporciona (y es un valor numérico válido)
@@ -114,17 +152,6 @@ class ExpenseStorage
 
     public function summaryExpenses($month = null)
     {
-        // if (empty($this->data)) {
-        //     return "No expenses found\n";
-        // }
-
-        // $total = 0;
-        // foreach ($this->data as $expense) {
-        //     $total += $expense->amount;
-        // }
-
-        // return "Total expenses: $$total\n";
-
         if (empty($this->data)) {
             return "No expenses found\n";
         }
@@ -170,6 +197,7 @@ class ExpenseStorage
             return [
                 'id' => $expense->id,
                 'description' => $expense->description,
+                'category' => $expense->category,
                 'amount' => $expense->amount,
                 'createdAt' => $expense->createdAt,
                 'updatedAt' => $expense->updatedAt,
