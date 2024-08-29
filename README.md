@@ -46,11 +46,11 @@ php app.php add --description="Cena con amigos" --amount=50 --category="Entreten
 php app.php list
 ```
 
-    Opcionalmente, puedes filtrar por categoría:
+Opcionalmente, puedes filtrar por categoría:
 
-    ```bash
-    php app.php list --category="Entretenimiento"
-    ```
+```bash
+php app.php list --category="Entretenimiento"
+```
 
 ### Listar categorías
 
